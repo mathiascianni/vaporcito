@@ -17,7 +17,7 @@ const HomeView = () => {
     return (
         <Container maxWidth="xl">
             <Typography variant="h1" sx={{ fontSize: "2rem", textTransform: "uppercase", my: "2rem" }} className="fontTitle">Juegos destacados</Typography>
-            <GameList response={response} limit={7}></GameList>
+            <GameList response={response} limit={15}></GameList>
         </Container>
     );
 }
