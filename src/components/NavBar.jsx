@@ -10,8 +10,8 @@ const NavBar = () => {
                 <Toolbar disableGutters>
                     <Link to="/" className="linkStyle"><Typography variant="body1" className="logo menuItem" ><GamesIcon /> Vaporcito</Typography></Link>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end', gap: '.5rem' }} component="nav">
-                        <Link to="/" className="linkStyle"><Button variant="text" className="menuItem" >Inicio</Button></Link>
-                        <Link to="/games" className="linkStyle"><Button variant="text" className="menuItem" >Juegos</Button></Link>
+                        <Link to="/" className="linkStyle"><Button variant="text" className="menuItem" >Home</Button></Link>
+                        <Link to="/games" className="linkStyle"><Button variant="text" className="menuItem" >Games</Button></Link>
                         <IconButton variant="text" className="menuItem" aria-label="cart"><Badge badgeContent={5} max={99} color="secondary"><Tooltip title="Mis Favoritos"><GradeIcon /></Tooltip></Badge></IconButton>
                     </Box>
                 </Toolbar>

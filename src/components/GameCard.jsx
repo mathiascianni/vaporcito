@@ -5,7 +5,7 @@ const GameCard = (props) => {
     return (
         <Card sx={{ height: '100%' }}>
             <CardActionArea sx={{ height: '100%' }}>
-                <CardMedia component="img" image={props.image} alt="Portada de Crypt of Necromancer" />
+                <CardMedia component="img" image={props.image} alt={props.title} sx={{height:191}} />
                 <CardContent sx={{ height: '100%' }}>
                     <Typography variant="h5" className='fontTitle'>{props.title}</Typography>
                     <Typography variant="body1" color="secondary">{props.genre}</Typography>
