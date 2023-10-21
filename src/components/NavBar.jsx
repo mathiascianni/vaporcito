@@ -1,20 +1,25 @@
-import { Link } from "react-router-dom";
-import { auth } from "../config/config.firebase";
+//React
 import { useState } from "react";
-import { Button } from "../components/_index";
+import { Link, NavLink } from "react-router-dom";
+
+//Firebase
+import { auth } from "../config/config.firebase";
 import { signOut } from "firebase/auth";
 
-const NavBar = () => {
-    const [profileMenu, setProfileMenu] = useState(false);
+//Icons
+import { BiMenu, BiLogOut } from 'react-icons/bi';
+import { AiOutlineClose } from 'react-icons/ai';
+import { PiHandbagSimpleFill } from 'react-icons/pi';
 
-    const handleProfileMenu = () => {
-        setProfileMenu(!profileMenu);
-    }
+const NavBar = () => {
+    const user = auth.currentUser;
+    const [menu, setMenu] = useState(false);
 
     const logout = async () => {
         try {
             await signOut(auth);
-            setProfileMenu(false);
+            setMenu(false);
+            // Cambiar a navigate
             window.location.reload();
         } catch (error) {
             console.error(error);
@@ -22,27 +27,52 @@ const NavBar = () => {
     }
 
     return (
-        <nav className="bg-neutral-800 text-light p-4 flex justify-between relative">
-            <ul className="flex gap-4">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/games">Games</Link></li>
+        <nav className="text-light p-8 flex justify-between relative mb-4">
+            <div className="container mx-auto flex items-center justify-between">
+                <Link to="/" className="text-2xl"><span className="text-primary font-bold">Vaporcito</span>.net</Link>
+                <ul className="flex gap-4 min-h-full">
+                    {user ?
+                        ""
+                        :
+                        <>
+                            <li className="flex items-center hover:underline hover:underline-offset-8"><Link to="/login" >Iniciar Sesión</Link></li>
+                            <li className="bg-primary p-1 px-4 rounded-full hover:bg-primary-dark transition cursor-pointer"><Link to="/register">Registrarme</Link></li>
+                        </>
+                    }
 
-                <li><Link to="/register">Register</Link></li>
-                <li><Link to="/admin/create-game">Create Game</Link></li>
-                <li><Link to="/admin">Dashboard</Link></li>
-            </ul>
-            <ul>
-                {auth.currentUser ?
-                    <li>
-                        <button onClick={handleProfileMenu} className="flex gap-2">
-                            {auth.currentUser.email}
-                            <img src={auth.currentUser.photoURL} alt="User profile picture" className="w-6 h-6 rounded-full" />
-                        </button>
-                    </li> :
-                    <li><Link to="/login">Iniciar sesión</Link></li>}
-            </ul>
-            <div className={`absolute top-[100%] w-[300px] flex flex-col gap-4 bg-neutral-800 right-0 text-light p-4 transition ${profileMenu ? "translate-x-0 " : "translate-x-full"}`}>
-                <Button action={logout}>Cerrar sesión</Button>
+                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md"><PiHandbagSimpleFill size="1.5rem" /></button></li>
+                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md" onClick={() => { setMenu(true); }} ><BiMenu size="1.5rem" /></button></li>
+                </ul>
+            </div>
+            <div className={`fixed bg-darker top-0 right-0 h-screen gap-8 w-[300px] transition ${menu ? "translate-x-0" : "translate-x-[110%]"}`}>
+                <div className="h-full w-full relative p-8 text-end">
+                    <button onClick={() => { setMenu(false); }} className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[-50%] rounded-full bg-darker p-4">
+                        <AiOutlineClose size="2rem" />
+                    </button>
+                    <ul className="flex flex-col gap-4 justify-between h-full">
+
+                        <li>
+                            <ul className="flex flex-col gap-4">
+                                <li className="hover:text-primary transition"><NavLink to="/">Inicio</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/catalog">Catálogo de juegos</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/support">Soporte</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/admin">Administrador</NavLink></li>
+                            </ul>
+                        </li>
+
+                        {user ?
+                            <li>
+                                <ul className="flex flex-col gap-4">
+                                    <li><div className="w-full h-[1px] bg-input"></div></li>
+                                    <li>
+                                        <p className="font-bold mb-4">{user.email}</p>
+                                        <button onClick={logout} className="transition flex items-center justify-end gap-2 w-full hover:text-error "><BiLogOut size="1.5rem" /> Cerrar Sesión</button>
+                                    </li>
+                                </ul>
+                            </li>
+                            : ""}
+                    </ul>
+                </div>
             </div>
         </nav>
     );

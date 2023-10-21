@@ -1,6 +1,6 @@
 const Input = ({ children, name, type = "text", placeholder, change, value }) => {
     const labelStyles = "pl-4";
-    const inputStyles = "bg-slate-900 px-4 py-2 rounded-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary";
+    const inputStyles = "bg-input px-4 py-2 rounded-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary";
 
     return (
         <div className="inline-flex flex-col">
