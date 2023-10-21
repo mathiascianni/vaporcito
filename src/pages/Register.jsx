@@ -1,6 +1,6 @@
 //Firebase Register
 import { auth, googleProvider } from "../config/config.firebase";
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 //Components
 import { Input, Title, Button } from "../components/_index";
@@ -35,13 +35,7 @@ const Register = () => {
     }
 
     //Cerrar sesión
-    const logout = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    
 
     const handleChangeEmail = (e) => {
         setEmail(e.target.value);
@@ -70,7 +64,6 @@ const Register = () => {
             </form>
             <div className="flex flex-col gap-4 mt-4">
                 <Button action={signInWithGoogle}>Crear con Google</Button>
-                <Button action={logout}>Cerrar sesión</Button>
             </div>
 
             

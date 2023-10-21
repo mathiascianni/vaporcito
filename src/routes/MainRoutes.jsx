@@ -1,5 +1,5 @@
 //Components
-import { MainTemplate, Login, Register, Home, CreateGame } from "../pages/_index";
+import { MainTemplate, Login, Register, Home, CreateGame, GamesDashboard, EditGame } from "../pages/_index";
 
 //Router
 import { Route, Routes } from "react-router-dom";
@@ -14,7 +14,9 @@ const MainRoutes = () => {
                 <Route path="/register" element={<Register />} />
 
                 {/* Admin routes */}
+                <Route path="/admin" element={<MainTemplate><GamesDashboard /></MainTemplate>} />
                 <Route path="/admin/create-game" element={<MainTemplate><CreateGame /></MainTemplate>} />
+                <Route path="/admin/edit-game/:id" element={<MainTemplate><EditGame /></MainTemplate>} />
 
                 <Route path="*" element={<div>404</div>} />
             </Routes>

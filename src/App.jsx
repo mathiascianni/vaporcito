@@ -6,7 +6,7 @@ import MainRoutes from "./routes/MainRoutes";
 
 const App = () => {
   return (
-    <div className="bg-dark text-light min-h-screen">
+    <div className="bg-dark text-light min-h-screen overflow-x-hidden">
       <MainRoutes />
     </div>
   );

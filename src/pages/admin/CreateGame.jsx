@@ -42,7 +42,7 @@ const CreateGame = () => {
 
     return (
         <div className="container mx-auto">
-            <h1>Añadir un nuevo</h1>
+            <h1>Añadir un nuevo juego</h1>
             <form onSubmit={handleSubmit}>
                 <Input type="text" name="title" placeholder="Game Title" change={(e) => handleTitleChange(e)}  value={title}>Título</Input>
                 <Input type="text" name="desc" placeholder="Game Description" change={(e) => handleDescChange(e)}  value={desc}>Descripción</Input>
