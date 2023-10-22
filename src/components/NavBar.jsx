@@ -29,7 +29,7 @@ const NavBar = () => {
     return (
         <nav className="text-light p-8 flex justify-between relative mb-4">
             <div className="container mx-auto flex items-center justify-between">
-                <Link to="/" className="text-2xl"><span className="text-primary font-bold">Vaporcito</span>.net</Link>
+                <Link to="/" className="text-2xl" onClick={() => { setMenu(false); }}><span className="text-primary font-bold">Vaporcito</span>.net</Link>
                 <ul className="flex gap-4 min-h-full">
                     {user ?
                         ""
@@ -40,11 +40,11 @@ const NavBar = () => {
                         </>
                     }
 
-                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md"><PiHandbagSimpleFill size="1.5rem" /></button></li>
-                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md" onClick={() => { setMenu(true); }} ><BiMenu size="1.5rem" /></button></li>
+                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md group hover:bg-white transition"><span className="group-hover:text-input transition"><PiHandbagSimpleFill size="1.5rem" /></span></button></li>
+                    <li><button className="bg-input h-full aspect-square flex items-center justify-center rounded-md group hover:bg-white transition" onClick={() => { setMenu(true); }} ><span className="group-hover:text-input transition"><BiMenu size="1.5rem" /></span></button></li>
                 </ul>
             </div>
-            <div className={`fixed bg-darker top-0 right-0 h-screen gap-8 w-[300px] transition ${menu ? "translate-x-0" : "translate-x-[110%]"}`}>
+            <div className={`fixed bg-darker top-0 right-0 h-screen gap-8 w-[300px] transition duration-500 ${menu ? "translate-x-0" : "translate-x-[120%]"}`}>
                 <div className="h-full w-full relative p-8 text-end">
                     <button onClick={() => { setMenu(false); }} className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[-50%] rounded-full bg-darker p-4">
                         <AiOutlineClose size="2rem" />
@@ -53,10 +53,10 @@ const NavBar = () => {
 
                         <li>
                             <ul className="flex flex-col gap-4">
-                                <li className="hover:text-primary transition"><NavLink to="/">Inicio</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/catalog">Catálogo de juegos</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/support">Soporte</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/admin">Administrador</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/" className="block" onClick={() => { setMenu(false); }}>Inicio</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/catalog" className="block" onClick={() => { setMenu(false); }}>Catálogo de juegos</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/support" className="block" onClick={() => { setMenu(false); }}>Soporte</NavLink></li>
+                                <li className="hover:text-primary transition"><NavLink to="/admin" className="block" onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
                             </ul>
                         </li>
 

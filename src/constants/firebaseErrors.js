@@ -10,6 +10,8 @@ const firebaseErrors = {
     "auth/invalid-argument": "Argumentos inválidos",
     "auth/popup-closed-by-user": "La ventana del popup ha sido cerrada por el usuario",
     "auth/popup-blocked": "La ventana del popup ha sido bloqueada",
+    "auth/missing-password": "La contraseña es requerida",
+    "auth/invalid-login-credentials": "El correo o la contraseña son inválidos",
 }
 
 export default firebaseErrors;
