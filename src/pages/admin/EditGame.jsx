@@ -1,14 +1,24 @@
+//Hooks
 import { useEffect, useState } from "react";
-import { Button, Input } from "../../components/_index";
-import { updateDoc, doc, getDoc, collection } from "firebase/firestore";
-import { db } from "../../config/config.firebase";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import useCurrentDateTime from "../../hooks/useCurrentDateTime";
 
-import { useNavigate } from "react-router-dom";
+//Components
+import { Button, Input } from "../../components/_index";
+
+//Firebase
+import { updateDoc, doc, getDoc, collection } from "firebase/firestore";
+import { db, storage } from "../../config/config.firebase";
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
+
+//Utils
+import { generateNewImageName } from "../../utils/generateNewImageName";
+
 
 const EditGame = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const imgUrl = useLocation().state.imgUrl;
 
     const gameDocRef = doc(db, "games", id);
 
@@ -16,6 +26,10 @@ const EditGame = () => {
     const [desc, setDesc] = useState("");
     const [price, setPrice] = useState("");
     const [newGame, setNewGame] = useState({});
+    const [imageUpload, setImageUpload] = useState(null);
+
+    const currentDateTime = useCurrentDateTime();
+
     const getGame = async () => {
         const docSnap = await getDoc(gameDocRef);
         docSnap.data();
@@ -39,11 +53,35 @@ const EditGame = () => {
         console.log(newGame)
 
         try {
+
+            //Validation
+            if (title === "") throw new Error("El nombre del juego no puede estar vacío");
+            if (desc === "") throw new Error("La descripción no puede estar vacía");
+            if (price === "") throw new Error("El precio no puede estar vacío");
+
+            let downloadURL = imgUrl;
+
+            if (imageUpload !== null) {
+                //Image handler
+                const storageRef = ref(storage, `images/${generateNewImageName(imageUpload.name, currentDateTime)}`);
+                const uploadImg = await uploadBytes(storageRef, imageUpload);
+                await deleteObject(ref(storage, imgUrl));
+                downloadURL = await getDownloadURL(uploadImg.ref);
+            }
+
+            //Add game to database
             await updateDoc(gameDocRef, {
                 title: newGame.title,
                 desc: newGame.desc,
-                price: newGame.price
-            })
+                price: newGame.price,
+                imgUrl: downloadURL
+            });
+
+            //Reset form
+            setTitle("");
+            setDesc("");
+            setPrice("");
+
             navigate("/admin");
         } catch (error) {
             console.error(error);
@@ -70,11 +108,13 @@ const EditGame = () => {
             {Object.keys(newGame).length > 0 ?
                 <>
                     <h1>Editar juego</h1>
+                    <img src={imgUrl} alt="" />
 
                     <form onSubmit={handleUpdateGame}>
                         <Input type="text" name="title" placeholder="Game Title" change={(e) => handleTitleChange(e)} value={title}>Título</Input>
                         <Input type="text" name="desc" placeholder="Game Description" change={(e) => handleDescChange(e)} value={desc}>Descripción</Input>
                         <Input type="number" name="price" placeholder="Game Price" change={(e) => handlePriceChange(e)} value={price}>Precio</Input>
+                        <input type="file" onChange={(e) => setImageUpload(e.target.files[0])} />
                         <Button type="submit">Guardar cambios</Button>
                     </form>
                 </>
