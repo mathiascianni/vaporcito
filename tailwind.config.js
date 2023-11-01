@@ -16,6 +16,7 @@ export default {
         "dark": "#121620",
         "light": "#ffffff",
         "input": "#1C212E",
+        "input-light": "#2b3242",
         "darker": "#060a14",
       }
     },

@@ -1,10 +1,20 @@
-import { Title, Button } from "../_index";
+//Components
+import { Title, Button, ModalNotification } from "../_index";
+import { Link } from "react-router-dom";
+
+//Hooks
+import { useState } from "react";
+
+//Firebase
 import { db, storage } from "../../config/config.firebase";
 import { deleteDoc, doc } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import { deleteObject, ref } from "firebase/storage";
 
+//Icons
+import { FiAlertCircle } from "react-icons/fi";
+
 const AdminCard = ({ data: game }) => {
+    const [modal, setModal] = useState(false);
     const deleteGame = async (id) => {
         const gameDoc = doc(db, "games", id);
         try {
@@ -25,8 +35,20 @@ const AdminCard = ({ data: game }) => {
 
 
                 <Link to={`/admin/edit-game/${game.id}`} state={{ imgUrl: game.imgUrl }}>Editar</Link>
-                <Button action={() => deleteGame(game.id)}>Eliminar</Button>
+                <Button action={() => setModal(true)}>Eliminar</Button>
             </div>
+            {modal &&
+                <ModalNotification
+                    title="Confirmar eliminar juego"
+                    subtitle={`¿Esta seguro de eliminar el juego ${game.title}?`}
+                    icon={<FiAlertCircle />}
+                    iColor="text-error"
+                    fBtnAction={() => deleteGame(game.id)}
+                    fBtnText="Eliminar"
+                    tBtnAction={() => setModal(false)}
+                    tBtnText="Cancelar"
+                    close={() => setModal(false)}
+                />}
         </div>
     );
 }

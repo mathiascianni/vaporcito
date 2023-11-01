@@ -1,5 +1,4 @@
 import { CardsContainer } from "../components/_index";
-
 const Home = () => {
     return (
         <div>

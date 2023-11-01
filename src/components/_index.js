@@ -7,6 +7,9 @@ import CardsContainer from "./CardsContainer";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import LoaderOrContent from "./LoaderOrContent";
+import Loader from "./Loader";
+import ModalNotification from "./ModalNotification";
+import TextArea from "./TextArea";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -20,5 +23,8 @@ export {
     NavBar,
     Footer,
     LoaderOrContent,
-    AdminCard
+    AdminCard,
+    Loader,
+    ModalNotification,
+    TextArea
 }
