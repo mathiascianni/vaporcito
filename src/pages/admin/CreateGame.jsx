@@ -40,6 +40,7 @@ const CreateGame = () => {
 
     const [imgPreview, setImgPreview] = useState(null);
     const [imageUpload, setImageUpload] = useState(null);
+    const [checkboxes, setCheckboxes] = useState([]);
     const gamesCollectionRef = collection(db, "games");
     const currentDateTime = useCurrentDateTime();
 
@@ -63,7 +64,6 @@ const CreateGame = () => {
 
             if (Object.keys(newErrors).length > 0) {
                 setErrors(newErrors);
-                console.log(newErrors);
                 throw new ErrorHandler("Se han producido errores");
             }
 
@@ -96,12 +96,13 @@ const CreateGame = () => {
             setEsrb("");
             setPlatforms([]);
             setDeveloper("");
+            setCheckboxes([]);
         } catch (error) {
             console.error(error.message);
         }
     }
 
-    const handleArrayChange = (array, setArray, code) => {
+    const handleArrayChange = (array, setArray, code, name) => {
         const newArray = [...array];
         const index = newArray.indexOf(code);
         if (index === -1) {
@@ -109,6 +110,7 @@ const CreateGame = () => {
         } else {
             newArray.splice(index, 1);
         }
+        setCheckboxes([...checkboxes, name]);
         setArray(newArray);
     }
 
@@ -139,19 +141,19 @@ const CreateGame = () => {
 
                     <div className="w-full flex mb-4 justify-between">
                         <div className="w-full mr-4">
-                            <SelectorWithBadges title="Idiomas disponibles" inputValues={allLangs} name="languages" handleChange={handleArrayChange} setArray={setLanguages} badges={languages} />
+                            <SelectorWithBadges title="Idiomas disponibles" inputValues={allLangs} name="languages" handleChange={handleArrayChange} setArray={setLanguages} badges={languages} checkboxes={checkboxes} />
                             <InputErrorNotification errors={errors} field="languages" />
                         </div>
 
                         <div className="w-full">
-                            <SelectorWithBadges title="Géneros" inputValues={allGenres} name="genres" handleChange={handleArrayChange} setArray={setGenres} badges={genres} limit={true} />
+                            <SelectorWithBadges title="Géneros" inputValues={allGenres} name="genres" handleChange={handleArrayChange} setArray={setGenres} badges={genres} limit={true} checkboxes={checkboxes} />
                             <InputErrorNotification errors={errors} field="genres" />
                         </div>
 
                     </div>
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         <div>
-                            <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} />
+                            <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} checkboxes={checkboxes} />
                             <InputErrorNotification errors={errors} field="platforms" />
                         </div>
                         <div>
