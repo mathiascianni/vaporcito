@@ -27,7 +27,7 @@ const Input = ({ children, name, type = "text", placeholder, change, value, id, 
                     onChange={change}
                     value={id}
                 />
-                <label htmlFor={id} className="w-full peer-checked:bg-primary hover:bg-input-light transition peer-checked:text-white p-2 cursor-pointer">{value}</label>
+                <label htmlFor={id} className="w-full peer-checked:bg-primary hover:bg-input-light transition peer-checked:text-white pl-4 p-2 cursor-pointer">{value}</label>
             </div>
         )
     }

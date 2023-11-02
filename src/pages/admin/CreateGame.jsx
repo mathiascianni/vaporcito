@@ -1,5 +1,5 @@
 //Components
-import { Button, Input, TextArea } from "../../components/_index";
+import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification } from "../../components/_index";
 
 //Firebase
 import { addDoc, collection } from "firebase/firestore";
@@ -13,22 +13,32 @@ import { useEffect, useState } from "react";
 //Utils
 import { generateNewImageName } from "../../utils/generateNewImageName";
 import allLangs from "../../constants/allLangs";
+import allPlatforms from "../../constants/allPlatforms";
+import allGenres from "../../constants/allGenres";
+import esrbRating from "../../constants/esrbRating";
+import ErrorHandler from "../../utils/ErrorHandler";
+import validationRules from "../../constants/validationRules";
 
 //Icons
 import { MdHideImage } from "react-icons/md";
 
 const CreateGame = () => {
+
+    //Input handlers
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
     const [price, setPrice] = useState("");
-    const [releaseDate, setReleaseDate] = useState("");
-    const [developer, setDeveloper] = useState("");
-    const [isEarlyAccess, setIsEarlyAccess] = useState(false);
     const [languages, setLanguages] = useState([]);
-    const [specs, setSpecs] = useState("");
-    const [imgPreview, setImgPreview] = useState(null);
-    //Genero, Subgenero, Plataforma, Lanzamiento, Desarrollador, Características de multijugador, Es early access, Rating ESRB, Etiquetas, Idiomas, Specs
+    const [genres, setGenres] = useState([]);
+    const [esrb, setEsrb] = useState("e");
+    const [platforms, setPlatforms] = useState([]);
+    const [developer, setDeveloper] = useState("");
+    //Lanzamiento, Características de multijugador, Es early access, Etiquetas, Specs
 
+    //Error handler
+    const [errors, setErrors] = useState({});
+
+    const [imgPreview, setImgPreview] = useState(null);
     const [imageUpload, setImageUpload] = useState(null);
     const gamesCollectionRef = collection(db, "games");
     const currentDateTime = useCurrentDateTime();
@@ -36,15 +46,28 @@ const CreateGame = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const newErrors = {};
 
         try {
-
             //Validation
-            if (title === "") throw new Error("El nombre del juego no puede estar vacío");
-            if (desc === "") throw new Error("La descripción no puede estar vacía");
-            if (price === "") throw new Error("El precio no puede estar vacío");
-            if (languages.length === 0) throw new Error("Debe seleccionar al menos un idioma");
-            if (imageUpload == null) throw new Error("No se ha seleccionado una imagen");
+            Object.entries(validationRules).forEach(([field, rules]) => {
+                rules.forEach((rule) => {
+                    if (rule.condition(eval(field))) {
+                        if (!newErrors[field]) {
+                            newErrors[field] = [];
+                        }
+                        newErrors[field].push(rule.message);
+                    }
+                });
+            });
+
+            if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors);
+                console.log(newErrors);
+                throw new ErrorHandler("Se han producido errores");
+            }
+
+            setErrors({});
 
             //Image handler
             const storageRef = ref(storage, `images/${generateNewImageName(imageUpload.name, currentDateTime)}`);
@@ -57,6 +80,10 @@ const CreateGame = () => {
                 desc: desc,
                 price: price,
                 languages: languages,
+                genres: genres,
+                esrb: esrb,
+                platforms: platforms,
+                developer: developer,
                 imgUrl: downloadURL
             });
 
@@ -65,33 +92,24 @@ const CreateGame = () => {
             setDesc("");
             setPrice("");
             setLanguages([]);
+            setGenres([]);
+            setEsrb("");
+            setPlatforms([]);
+            setDeveloper("");
         } catch (error) {
-            console.error(error);
+            console.error(error.message);
         }
     }
 
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-    }
-
-    const handleDescChange = (e) => {
-        setDesc(e.target.value);
-    }
-
-    const handlePriceChange = (e) => {
-        setPrice(Number(e.target.value));
-    }
-
-    const handleLangChange = (code) => {
-        const newLangs = [...languages];
-        const index = newLangs.indexOf(code);
+    const handleArrayChange = (array, setArray, code) => {
+        const newArray = [...array];
+        const index = newArray.indexOf(code);
         if (index === -1) {
-            newLangs.push(code);
+            newArray.push(code);
         } else {
-            newLangs.splice(index, 1);
+            newArray.splice(index, 1);
         }
-        setLanguages(newLangs);
-        
+        setArray(newArray);
     }
 
     const uploadImg = (e) => {
@@ -99,31 +117,56 @@ const CreateGame = () => {
         if (e.target.files[0]) setImgPreview(URL.createObjectURL(e.target.files[0]));
     }
 
-    useEffect(() => {
-        console.log(languages);
-    }, [languages])
-
     return (
         <div className="container mx-auto">
             <h1>Añadir un nuevo juego</h1>
             <div className="grid grid-cols-3 gap-4">
                 <form onSubmit={handleSubmit} className="col-span-2">
                     <div className="w-full flex gap-4">
-                        <Input type="text" name="title" placeholder="Game Title" change={(e) => handleTitleChange(e)} value={title}>Título</Input>
-                        <Input type="number" name="price" placeholder="Game Price" change={(e) => handlePriceChange(e)} value={price}>Precio</Input>
+                        <div className="w-full">
+                            <Input type="text" name="title" placeholder="Minecraft" change={(e) => setTitle(e.target.value)} value={title}>Título</Input>
+                            <InputErrorNotification errors={errors} field="title" />
+                        </div>
+                        <div className="w-full">
+                            <Input type="number" name="price" placeholder="12,99" change={(e) => setPrice(Number(e.target.value))} value={price}>Precio</Input>
+                            <InputErrorNotification errors={errors} field="price" />
+                        </div>
                     </div>
-                    <TextArea name="desc" placeholder="Game Description" change={(e) => handleDescChange(e)} value={desc}>Descripción</TextArea>
+                    <div>
+                        <TextArea name="desc" placeholder="Un juego sandbox de generación procedural..." change={(e) => setDesc(e.target.value)} value={desc}>Descripción</TextArea>
+                        <InputErrorNotification errors={errors} field="desc" />
+                    </div>
 
-                    <p>Idiomas disponibles</p>
-                    <div className="w-full flex gap-1 my-2">
-                        {languages.length > 0 && languages.map((lang) => (
-                            <div key={lang} className="text-sm border border-primary px-2 py-1 w-10 rounded-full text-center uppercase	">{lang}</div>
-                        ))}
+                    <div className="w-full flex mb-4 justify-between">
+                        <div className="w-full mr-4">
+                            <SelectorWithBadges title="Idiomas disponibles" inputValues={allLangs} name="languages" handleChange={handleArrayChange} setArray={setLanguages} badges={languages} />
+                            <InputErrorNotification errors={errors} field="languages" />
+                        </div>
+
+                        <div className="w-full">
+                            <SelectorWithBadges title="Géneros" inputValues={allGenres} name="genres" handleChange={handleArrayChange} setArray={setGenres} badges={genres} limit={true} />
+                            <InputErrorNotification errors={errors} field="genres" />
+                        </div>
+
                     </div>
-                    <div className="overflow-y-scroll max-h-[150px]">
-                        {allLangs.map((lang) => (
-                            <Input key={lang.code} type="checkbox" name="lang" id={lang.code} value={lang.name} change={() => handleLangChange(lang.code)} />
-                        ))}
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} />
+                            <InputErrorNotification errors={errors} field="platforms" />
+                        </div>
+                        <div>
+                            <p className="pl-4 mb-1">Clasificación ESRB</p>
+                            <select name="esrb" id="esrb" className="bg-input px-4 py-2 rounded-full w-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary" value={esrb} onChange={(e) => setEsrb(e.target.value)}>
+                                {esrbRating.map((esrb) => (
+                                    <option key={esrb.id} value={esrb.code}>{esrb.name}</option>
+                                ))}
+                            </select>
+                            <InputErrorNotification errors={errors} field="esrb" />
+                        </div>
+                        <div>
+                            <Input type="text" name="developer" placeholder="Mojang" change={(e) => setDeveloper(e.target.value)} value={developer}>Desarrollador</Input>
+                            <InputErrorNotification errors={errors} field="developer" />
+                        </div>
                     </div>
 
 
@@ -133,7 +176,7 @@ const CreateGame = () => {
                     <div className="mb-4">
                         <p className="pl-4 mb-1">Banner actual</p>
                         {imgPreview ? <img src={imgPreview} alt="" className="w-full h-60 object-cover" /> : <div className="w-full h-60 bg-input flex flex-col items-center justify-center"><MdHideImage className="text-2xl" /> No hay imagen</div>}
-
+                        <InputErrorNotification errors={errors} field="imageUpload" />
                     </div>
                     <Input type="file" change={(e) => uploadImg(e)} id="banner" >Cambiar Banner</Input>
                 </div>

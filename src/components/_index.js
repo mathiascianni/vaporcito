@@ -10,6 +10,8 @@ import LoaderOrContent from "./LoaderOrContent";
 import Loader from "./Loader";
 import ModalNotification from "./ModalNotification";
 import TextArea from "./TextArea";
+import SelectorWithBadges from "./SelectorWithBadges";
+import InputErrorNotification from "./InputErrorNotification";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -26,5 +28,7 @@ export {
     AdminCard,
     Loader,
     ModalNotification,
-    TextArea
+    TextArea,
+    SelectorWithBadges,
+    InputErrorNotification
 }
