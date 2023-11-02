@@ -1,5 +1,5 @@
 import { AiOutlineCloudUpload } from "react-icons/ai";
-const Input = ({ children, name, type = "text", placeholder, change, value, id, checked }) => {
+const Input = ({ children, name, type = "text", placeholder, change, value, id, checkboxes }) => {
     const labelStyles = "pl-4 mb-1";
     const inputStyles = "bg-input px-4 py-2 rounded-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary";
 
@@ -26,6 +26,7 @@ const Input = ({ children, name, type = "text", placeholder, change, value, id, 
                     className="hidden peer"
                     onChange={change}
                     value={id}
+                    checked={checkboxes && checkboxes.includes(id) ? true : false}
                 />
                 <label htmlFor={id} className="w-full peer-checked:bg-primary hover:bg-input-light transition peer-checked:text-white pl-4 p-2 cursor-pointer">{value}</label>
             </div>

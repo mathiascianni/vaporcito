@@ -1,5 +1,5 @@
 import { Input } from "./_index";
-const SelectorWithBadges = ({ title, inputValues, name, handleChange, setArray, badges, limit = false }) => {
+const SelectorWithBadges = ({ title, inputValues, name, handleChange, setArray, badges, limit = false, checkboxes }) => {
     
     return (
         <>
@@ -7,7 +7,7 @@ const SelectorWithBadges = ({ title, inputValues, name, handleChange, setArray, 
 
             <div className="overflow-y-scroll max-h-[150px] capitalize">
                 {inputValues.map((val) => (
-                    <Input key={val.id} type="checkbox" name={name} id={name+val.id} value={val.name} change={() => handleChange(badges, setArray, val.code)} />
+                    <Input key={val.id} type="checkbox" name={name} id={name+val.id} value={val.name} checkboxes={checkboxes} change={() => handleChange(badges, setArray, val.code, name+val.id)} />
                 ))}
             </div>
             {
