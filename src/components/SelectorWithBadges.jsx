@@ -5,7 +5,7 @@ const SelectorWithBadges = ({ title, inputValues, name, handleChange, setArray, 
         <>
             <p className="pl-4 mb-1">{title}</p>
 
-            <div className="overflow-y-scroll max-h-[150px] capitalize">
+            <div className="overflow-y-scroll max-h-[150px] capitalize rounded-md">
                 {inputValues.map((val) => (
                     <Input key={val.id} type="checkbox" name={name} id={name+val.id} value={val.name} checkboxes={checkboxes} change={() => handleChange(badges, setArray, val.code, name+val.id)} />
                 ))}

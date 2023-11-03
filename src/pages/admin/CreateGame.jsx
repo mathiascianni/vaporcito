@@ -1,5 +1,5 @@
 //Components
-import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification } from "../../components/_index";
+import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification, SquareSelector } from "../../components/_index";
 
 //Firebase
 import { addDoc, collection } from "firebase/firestore";
@@ -12,15 +12,19 @@ import { useEffect, useState } from "react";
 
 //Utils
 import { generateNewImageName } from "../../utils/generateNewImageName";
+import ErrorHandler from "../../utils/ErrorHandler";
+
+//Constants
 import allLangs from "../../constants/allLangs";
 import allPlatforms from "../../constants/allPlatforms";
 import allGenres from "../../constants/allGenres";
 import esrbRating from "../../constants/esrbRating";
-import ErrorHandler from "../../utils/ErrorHandler";
 import validationRules from "../../constants/validationRules";
+import gameplayTags from "../../constants/gameplayTags";
 
 //Icons
 import { MdHideImage } from "react-icons/md";
+import { AiOutlineCheck } from "react-icons/ai";
 
 const CreateGame = () => {
 
@@ -33,7 +37,9 @@ const CreateGame = () => {
     const [esrb, setEsrb] = useState("e");
     const [platforms, setPlatforms] = useState([]);
     const [developer, setDeveloper] = useState("");
-    //Lanzamiento, Características de multijugador, Es early access, Etiquetas, Specs
+    const [multiplayer, setMultiplayer] = useState([]);
+    const [isEarlyAccess, setIsEarlyAccess] = useState(false);
+    //Lanzamiento, Es early access, Etiquetas, Specs
 
     //Error handler
     const [errors, setErrors] = useState({});
@@ -69,7 +75,7 @@ const CreateGame = () => {
 
             setErrors({});
 
-            //Image handler
+            //Banner image handler
             const storageRef = ref(storage, `images/${generateNewImageName(imageUpload.name, currentDateTime)}`);
             const uploadImg = await uploadBytes(storageRef, imageUpload);
             const downloadURL = await getDownloadURL(uploadImg.ref);
@@ -84,6 +90,8 @@ const CreateGame = () => {
                 esrb: esrb,
                 platforms: platforms,
                 developer: developer,
+                isEarlyAccess: isEarlyAccess,
+                multiplayer: multiplayer,
                 imgUrl: downloadURL
             });
 
@@ -97,6 +105,7 @@ const CreateGame = () => {
             setPlatforms([]);
             setDeveloper("");
             setCheckboxes([]);
+            setIsEarlyAccess(false);
         } catch (error) {
             console.error(error.message);
         }
@@ -110,7 +119,13 @@ const CreateGame = () => {
         } else {
             newArray.splice(index, 1);
         }
-        setCheckboxes([...checkboxes, name]);
+
+        const nameIndex = checkboxes.indexOf(name);
+        if (nameIndex === -1) {
+            setCheckboxes([...checkboxes, name]);
+        } else {
+            setCheckboxes(checkboxes.filter((checkbox) => checkbox !== name));
+        }
         setArray(newArray);
     }
 
@@ -126,11 +141,11 @@ const CreateGame = () => {
                 <form onSubmit={handleSubmit} className="col-span-2">
                     <div className="w-full flex gap-4">
                         <div className="w-full">
-                            <Input type="text" name="title" placeholder="Minecraft" change={(e) => setTitle(e.target.value)} value={title}>Título</Input>
+                            <Input type="text" name="title" placeholder="Minecraft" id="title" change={(e) => setTitle(e.target.value)} value={title}>Título</Input>
                             <InputErrorNotification errors={errors} field="title" />
                         </div>
                         <div className="w-full">
-                            <Input type="number" name="price" placeholder="12,99" change={(e) => setPrice(Number(e.target.value))} value={price}>Precio</Input>
+                            <Input type="number" name="price" placeholder="12,99" id="price" change={(e) => setPrice(Number(e.target.value))} value={price}>Precio</Input>
                             <InputErrorNotification errors={errors} field="price" />
                         </div>
                     </div>
@@ -153,12 +168,8 @@ const CreateGame = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         <div>
-                            <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} checkboxes={checkboxes} />
-                            <InputErrorNotification errors={errors} field="platforms" />
-                        </div>
-                        <div>
                             <p className="pl-4 mb-1">Clasificación ESRB</p>
-                            <select name="esrb" id="esrb" className="bg-input px-4 py-2 rounded-full w-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary" value={esrb} onChange={(e) => setEsrb(e.target.value)}>
+                            <select name="esrb" id="esrb" className="bg-input cursor-pointer px-4 py-2 rounded-full w-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary" value={esrb} onChange={(e) => setEsrb(e.target.value)}>
                                 {esrbRating.map((esrb) => (
                                     <option key={esrb.id} value={esrb.code}>{esrb.name}</option>
                                 ))}
@@ -166,12 +177,26 @@ const CreateGame = () => {
                             <InputErrorNotification errors={errors} field="esrb" />
                         </div>
                         <div>
-                            <Input type="text" name="developer" placeholder="Mojang" change={(e) => setDeveloper(e.target.value)} value={developer}>Desarrollador</Input>
+                            <Input type="text" name="developer" placeholder="Mojang" id="developer" change={(e) => setDeveloper(e.target.value)} value={developer}>Desarrollador</Input>
                             <InputErrorNotification errors={errors} field="developer" />
+                        </div>
+                        <div>
+                            <SquareSelector name="isEarlyAccess" content={<AiOutlineCheck />} checkboxes={checkboxes} handleChange={setIsEarlyAccess} title="¿Está en Early Access?" toggle={isEarlyAccess} />
+                        </div>
+                    </div>
+                    <div className="flex gap-4 mb-4">
+                        <div className="w-full">
+                            <SelectorWithBadges title="Características de multijugador" inputValues={gameplayTags} name="multiplayer" handleChange={handleArrayChange} setArray={setMultiplayer} badges={multiplayer} checkboxes={checkboxes} />
+                        </div>
+                        <div className="w-full">
+                            <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} checkboxes={checkboxes} />
+                            <InputErrorNotification errors={errors} field="platforms" />
                         </div>
                     </div>
 
-
+                    <div className="w-full bg-input p-4">
+                        asd
+                    </div>
                     <Button type="submit">Añadir</Button>
                 </form>
                 <div>

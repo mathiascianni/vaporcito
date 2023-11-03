@@ -12,6 +12,7 @@ import ModalNotification from "./ModalNotification";
 import TextArea from "./TextArea";
 import SelectorWithBadges from "./SelectorWithBadges";
 import InputErrorNotification from "./InputErrorNotification";
+import SquareSelector from "./SquareSelector";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -30,5 +31,6 @@ export {
     ModalNotification,
     TextArea,
     SelectorWithBadges,
-    InputErrorNotification
+    InputErrorNotification,
+    SquareSelector
 }
