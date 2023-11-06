@@ -4,8 +4,8 @@ import { Input, Title } from "../components/_index";
 import { useNavigate, Link } from "react-router-dom";
 
 //Firebase
-import { auth } from "../config/config.firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "../config/config.firebase";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 //Icons
 import { FcGoogle } from "react-icons/fc";

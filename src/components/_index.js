@@ -13,6 +13,7 @@ import TextArea from "./TextArea";
 import SelectorWithBadges from "./SelectorWithBadges";
 import InputErrorNotification from "./InputErrorNotification";
 import SquareSelector from "./SquareSelector";
+import ResponsiveLayout from "./ResponsiveLayout";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -32,5 +33,6 @@ export {
     TextArea,
     SelectorWithBadges,
     InputErrorNotification,
-    SquareSelector
+    SquareSelector,
+    ResponsiveLayout
 }
