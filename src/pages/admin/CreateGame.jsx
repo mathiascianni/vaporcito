@@ -1,5 +1,5 @@
 //Components
-import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification, SquareSelector } from "../../components/_index";
+import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification, SquareSelector, ResponsiveLayout, Title } from "../../components/_index";
 
 //Firebase
 import { addDoc, collection } from "firebase/firestore";
@@ -135,11 +135,11 @@ const CreateGame = () => {
     }
 
     return (
-        <div className="container mx-auto">
-            <h1>Añadir un nuevo juego</h1>
-            <div className="grid grid-cols-3 gap-4">
-                <form onSubmit={handleSubmit} className="col-span-2">
-                    <div className="w-full flex gap-4">
+        <ResponsiveLayout>
+            <Title type="h1">Crear juego</Title>
+            <form onSubmit={handleSubmit} className="md:grid grid-cols-3 gap-4">
+                <div className="md:col-span-2">
+                    <div className="w-full flex flex-col md:flex-row gap-4">
                         <div className="w-full">
                             <Input type="text" name="title" placeholder="Minecraft" id="title" change={(e) => setTitle(e.target.value)} value={title}>Título</Input>
                             <InputErrorNotification errors={errors} field="title" />
@@ -154,7 +154,7 @@ const CreateGame = () => {
                         <InputErrorNotification errors={errors} field="desc" />
                     </div>
 
-                    <div className="w-full flex mb-4 justify-between">
+                    <div className="w-full flex flex-col md:flex-row gap-4 mb-4 justify-between">
                         <div className="w-full mr-4">
                             <SelectorWithBadges title="Idiomas disponibles" inputValues={allLangs} name="languages" handleChange={handleArrayChange} setArray={setLanguages} badges={languages} checkboxes={checkboxes} />
                             <InputErrorNotification errors={errors} field="languages" />
@@ -166,7 +166,7 @@ const CreateGame = () => {
                         </div>
 
                     </div>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="md:grid grid-cols-3 gap-4 mb-4">
                         <div>
                             <p className="pl-4 mb-1">Clasificación ESRB</p>
                             <select name="esrb" id="esrb" className="bg-input cursor-pointer px-4 py-2 rounded-full w-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary" value={esrb} onChange={(e) => setEsrb(e.target.value)}>
@@ -184,7 +184,7 @@ const CreateGame = () => {
                             <SquareSelector name="isEarlyAccess" content={<AiOutlineCheck />} checkboxes={checkboxes} handleChange={setIsEarlyAccess} title="¿Está en Early Access?" toggle={isEarlyAccess} />
                         </div>
                     </div>
-                    <div className="flex gap-4 mb-4">
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
                         <div className="w-full">
                             <SelectorWithBadges title="Características de multijugador" inputValues={gameplayTags} name="multiplayer" handleChange={handleArrayChange} setArray={setMultiplayer} badges={multiplayer} checkboxes={checkboxes} />
                         </div>
@@ -197,8 +197,7 @@ const CreateGame = () => {
                     <div className="w-full bg-input p-4">
                         asd
                     </div>
-                    <Button type="submit">Añadir</Button>
-                </form>
+                </div>
                 <div>
                     <div className="mb-4">
                         <p className="pl-4 mb-1">Banner actual</p>
@@ -207,8 +206,9 @@ const CreateGame = () => {
                     </div>
                     <Input type="file" change={(e) => uploadImg(e)} id="banner" >Cambiar Banner</Input>
                 </div>
-            </div>
-        </div>
+                <Button type="submit">Añadir</Button>
+            </form>
+        </ResponsiveLayout>
     );
 }
 
