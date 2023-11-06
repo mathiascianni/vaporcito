@@ -58,7 +58,6 @@ const NavBar = () => {
                                 <li className="hover:text-primary transition"><NavLink to="/catalog" className="block" onClick={() => { setMenu(false); }}>Catálogo de juegos</NavLink></li>
                                 <li className="hover:text-primary transition"><NavLink to="/support" className="block" onClick={() => { setMenu(false); }}>Soporte</NavLink></li>
                                 <li className="hover:text-primary transition"><NavLink to="/admin" className="block" onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/admin/create-game" className="block" onClick={() => { setMenu(false); }}>Crear juego</NavLink></li>
                                 {
                                     isMobile && !user &&
                                     <>

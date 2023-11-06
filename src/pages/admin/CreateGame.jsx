@@ -46,6 +46,7 @@ const CreateGame = () => {
 
     const [imgPreview, setImgPreview] = useState(null);
     const [imageUpload, setImageUpload] = useState(null);
+    const [selectedMedia, setSelectedMedia] = useState([]);
     const [checkboxes, setCheckboxes] = useState([]);
     const gamesCollectionRef = collection(db, "games");
     const currentDateTime = useCurrentDateTime();
@@ -134,6 +135,13 @@ const CreateGame = () => {
         if (e.target.files[0]) setImgPreview(URL.createObjectURL(e.target.files[0]));
     }
 
+    const uploadMedia = (e) => {
+        const file = e.target.files;
+        if (!file) return;
+        const selectedFiles = Array.from(file);
+        setSelectedMedia(selectedFiles);
+    }
+
     return (
         <ResponsiveLayout>
             <Title type="h1">Crear juego</Title>
@@ -195,7 +203,7 @@ const CreateGame = () => {
                     </div>
 
                     <div className="w-full bg-input p-4">
-                        asd
+                        <Input type="file-multiple" media={selectedMedia} change={(e) => uploadMedia(e)} id="mediaUpload" >Subir archivos</Input>
                     </div>
                 </div>
                 <div>
