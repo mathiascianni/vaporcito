@@ -3,6 +3,7 @@ import Login from "./Login";
 import Register from "./Register";
 import MainTemplate from "./MainTemplate";
 import Home from "./Home";
+import GameDetails from "./GameDetails";
 
 // Admin routes
 import CreateGame from "./admin/CreateGame";
@@ -17,5 +18,6 @@ export {
     Home,
     CreateGame,
     GamesDashboard,
-    EditGame
+    EditGame,
+    GameDetails
 }

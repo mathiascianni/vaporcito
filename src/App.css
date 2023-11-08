@@ -41,6 +41,11 @@
     animation: rotate 1s linear infinite;
 }
 
+.card3d:hover {
+    transform: perspective(1700px) rotateX(20deg);
+    box-shadow: 0 30px 40px rgba(0, 0, 0, 0.5);
+}
+
 @keyframes rotate {
     0% {
         transform: rotate(0)

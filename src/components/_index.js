@@ -15,6 +15,7 @@ import InputErrorNotification from "./InputErrorNotification";
 import SquareSelector from "./SquareSelector";
 import ResponsiveLayout from "./ResponsiveLayout";
 import MediaPreview from "./MediaPreview";
+import MediaCarousel from "./MediaCarousel";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -36,5 +37,6 @@ export {
     InputErrorNotification,
     SquareSelector,
     ResponsiveLayout,
-    MediaPreview
+    MediaPreview,
+    MediaCarousel
 }

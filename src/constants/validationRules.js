@@ -36,6 +36,9 @@ const validationRules = {
     ],
     multiplayer: [
         { condition: (multiplayer) => multiplayer.length === 0, message: "Debe seleccionar al menos una característica" },
+    ],
+    coverImage: [
+        { condition: (coverImage) => coverImage === null, message: "Debe seleccionar una imagen" },
     ]
 }
 
