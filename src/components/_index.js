@@ -14,6 +14,7 @@ import SelectorWithBadges from "./SelectorWithBadges";
 import InputErrorNotification from "./InputErrorNotification";
 import SquareSelector from "./SquareSelector";
 import ResponsiveLayout from "./ResponsiveLayout";
+import MediaPreview from "./MediaPreview";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -34,5 +35,6 @@ export {
     SelectorWithBadges,
     InputErrorNotification,
     SquareSelector,
-    ResponsiveLayout
+    ResponsiveLayout,
+    MediaPreview
 }

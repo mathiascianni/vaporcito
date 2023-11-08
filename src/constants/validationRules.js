@@ -30,6 +30,12 @@ const validationRules = {
     ],
     imageUpload: [
         { condition: (imageUpload) => imageUpload === null, message: "Debe seleccionar una imagen" },
+    ],
+    selectedMedia: [
+        { condition: (selectedMedia) => selectedMedia.length === 0, message: "Debe seleccionar al menos un archivo" },
+    ],
+    multiplayer: [
+        { condition: (multiplayer) => multiplayer.length === 0, message: "Debe seleccionar al menos una característica" },
     ]
 }
 

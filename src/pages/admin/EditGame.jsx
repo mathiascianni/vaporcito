@@ -12,7 +12,7 @@ import { db, storage } from "../../config/config.firebase";
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
 
 //Utils
-import { generateNewImageName } from "../../utils/generateNewImageName";
+import { generateNewFileName } from "../../utils/generateNewFileName";
 
 
 const EditGame = () => {
@@ -64,7 +64,7 @@ const EditGame = () => {
 
             if (imageUpload !== null) {
                 //Image handler
-                const storageRef = ref(storage, `images/${generateNewImageName(imageUpload.name, currentDateTime)}`);
+                const storageRef = ref(storage, `images/${generateNewFileName(imageUpload.name, currentDateTime)}`);
                 const uploadImg = await uploadBytes(storageRef, imageUpload);
                 await deleteObject(ref(storage, imgUrl));
                 downloadURL = await getDownloadURL(uploadImg.ref);

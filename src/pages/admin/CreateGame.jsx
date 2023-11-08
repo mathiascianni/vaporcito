@@ -1,5 +1,5 @@
 //Components
-import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification, SquareSelector, ResponsiveLayout, Title } from "../../components/_index";
+import { Button, Input, TextArea, SelectorWithBadges, InputErrorNotification, SquareSelector, ResponsiveLayout, Title, MediaPreview } from "../../components/_index";
 
 //Firebase
 import { addDoc, collection } from "firebase/firestore";
@@ -11,7 +11,7 @@ import useCurrentDateTime from "../../hooks/useCurrentDateTime";
 import { useEffect, useState } from "react";
 
 //Utils
-import { generateNewImageName } from "../../utils/generateNewImageName";
+import { generateNewFileName } from "../../utils/generateNewFileName";
 import ErrorHandler from "../../utils/ErrorHandler";
 
 //Constants
@@ -77,9 +77,23 @@ const CreateGame = () => {
             setErrors({});
 
             //Banner image handler
-            const storageRef = ref(storage, `images/${generateNewImageName(imageUpload.name, currentDateTime)}`);
+            const storageRef = ref(storage, `images/${generateNewFileName(imageUpload.name, currentDateTime)}`);
             const uploadImg = await uploadBytes(storageRef, imageUpload);
             const downloadURL = await getDownloadURL(uploadImg.ref);
+
+            const mediaUrls = []
+            //Media handler
+            if (selectedMedia.length > 0) {
+                const uploadPromises = selectedMedia.map(async (media) => {
+                    const mediaStorageRef = ref(storage, `media/${generateNewFileName(title, currentDateTime)}/${generateNewFileName(media.name, currentDateTime)}`);
+                    const uploadMedia = await uploadBytes(mediaStorageRef, media);
+                    const downloadMediaURL = await getDownloadURL(uploadMedia.ref);
+                    mediaUrls.push(downloadMediaURL);
+                    return downloadMediaURL;
+                });
+                //Awaits all the urls from the database
+                await Promise.all(uploadPromises);
+            }
 
             //Add game to database
             await addDoc(gamesCollectionRef, {
@@ -93,7 +107,8 @@ const CreateGame = () => {
                 developer: developer,
                 isEarlyAccess: isEarlyAccess,
                 multiplayer: multiplayer,
-                imgUrl: downloadURL
+                imgUrl: downloadURL,
+                media: mediaUrls
             });
 
             //Reset form
@@ -102,11 +117,12 @@ const CreateGame = () => {
             setPrice("");
             setLanguages([]);
             setGenres([]);
-            setEsrb("");
+            setEsrb("e");
             setPlatforms([]);
             setDeveloper("");
             setCheckboxes([]);
             setIsEarlyAccess(false);
+            setSelectedMedia([]);
         } catch (error) {
             console.error(error.message);
         }
@@ -195,6 +211,7 @@ const CreateGame = () => {
                     <div className="flex flex-col md:flex-row gap-4 mb-4">
                         <div className="w-full">
                             <SelectorWithBadges title="Características de multijugador" inputValues={gameplayTags} name="multiplayer" handleChange={handleArrayChange} setArray={setMultiplayer} badges={multiplayer} checkboxes={checkboxes} />
+                            <InputErrorNotification errors={errors} field="multiplayer" />
                         </div>
                         <div className="w-full">
                             <SelectorWithBadges title="Plataformas disponibles" inputValues={allPlatforms} name="platforms" handleChange={handleArrayChange} setArray={setPlatforms} badges={platforms} checkboxes={checkboxes} />
@@ -204,7 +221,12 @@ const CreateGame = () => {
 
                     <div className="w-full bg-input p-4">
                         <Input type="file-multiple" media={selectedMedia} change={(e) => uploadMedia(e)} id="mediaUpload" >Subir archivos</Input>
+                        {
+                            selectedMedia.length > 0 &&
+                            <MediaPreview media={selectedMedia} />
+                        }
                     </div>
+                    <InputErrorNotification errors={errors} field="selectedMedia" />
                 </div>
                 <div>
                     <div className="mb-4">

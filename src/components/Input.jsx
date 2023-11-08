@@ -20,25 +20,7 @@ const Input = ({ children, name, type = "text", placeholder, change, value, id, 
         return (
             <div className="flex flex-col justify-center w-full mb-4">
                 <p className="pl-4 mb-1">{children}</p>
-                <div className="flex gap-4">
-                    {
-                        media?.map((file, i) => (
-                            <div className="w-[300px] aspect-[3/2]" key={i}>
-
-                                {file.type.startsWith('image/') ? (
-                                    <img src={URL.createObjectURL(file)} alt={file.name} className="object-cover object-center w-full h-full" />
-                                ) : file.type.startsWith('video/') ? (
-                                    <video controls className="object-cover object-center w-full h-full">
-                                        <source src={URL.createObjectURL(file)} type={file.type} />
-                                        Tu navegador no admite la reproducción de video.
-                                    </video>
-                                ) : (
-                                    <p>Vista previa no disponible</p>
-                                )}
-                            </div>
-                        ))
-                    }
-                </div>
+                
                 <label htmlFor={id} className="w-full bg-input p-4 rounded-md border border-dashed hover:border-white border-input-light cursor-pointer hover:bg-input-light transition group text-input-light flex items-center justify-center flex-col">
                     <AiOutlineCloudUpload className="text-4xl text-input-light group-hover:text-white transition" />
                     <span className="group-hover:text-white transition">Haz click para subir una imágen</span>
