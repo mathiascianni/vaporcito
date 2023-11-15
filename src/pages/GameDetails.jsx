@@ -66,11 +66,11 @@ const GameDetails = () => {
                     <img src={imgUrl} alt={"Banner de " + title} className="mb-4 rounded-md" />
                     <p className="mb-4">{desc}</p>
                     <div className="bg-input-light text-white rounded-md p-4 flex justify-between items-center mb-4">
-                        <button className="bg-primary p-1 px-4 rounded-sm hover:bg-primary-dark transition">Añadir al carrito</button>
                         <div className="flex items-center">
                             <span className="bg-success p-1 px-2 rounded-l-sm">-20%</span>
                             <p className="bg-input p-1 px-2 rounded-r-sm">USD${price}</p>
                         </div>
+                        <button className="bg-primary p-1 px-4 rounded-sm hover:bg-primary-dark transition">Añadir al carrito</button>
                     </div>
                     <div>
                         <Title type="h2">Géneros</Title>

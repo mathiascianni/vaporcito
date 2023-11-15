@@ -16,6 +16,7 @@ import SquareSelector from "./SquareSelector";
 import ResponsiveLayout from "./ResponsiveLayout";
 import MediaPreview from "./MediaPreview";
 import MediaCarousel from "./MediaCarousel";
+import SkeletonMediaLoader from "./SkeletonMediaLoader";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
@@ -38,5 +39,6 @@ export {
     SquareSelector,
     ResponsiveLayout,
     MediaPreview,
-    MediaCarousel
+    MediaCarousel,
+    SkeletonMediaLoader
 }
