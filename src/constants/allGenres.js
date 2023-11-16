@@ -83,19 +83,3 @@ const allGenres = [
 ]
 
 export default allGenres;
-
-"acción",
-    "aventura",
-    "deportes",
-    "estrategia",
-    "misterio",
-    "mundo",
-    "musica",
-    "otro",
-    "puzzle",
-    "rpg",
-    "simulación",
-    "supervivencia",
-    "terror",
-    "souls-like",
-    "sobrenatural"

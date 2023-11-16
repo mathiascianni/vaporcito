@@ -39,25 +39,28 @@ const CreateGame = () => {
     const [developer, setDeveloper] = useState("");
     const [multiplayer, setMultiplayer] = useState([]);
     const [isEarlyAccess, setIsEarlyAccess] = useState(false);
-    //Lanzamiento, Es early access, Etiquetas, Specs
+    //Lanzamiento, Etiquetas, Specs
 
     //Error handler
     const [errors, setErrors] = useState({});
 
     const [imgPreview, setImgPreview] = useState(null);
     const [imageUpload, setImageUpload] = useState(null);
+    const [coverImage, setCoverImage] = useState(null);
+    const [coverImgPreview, setCoverImgPreview] = useState(null);
     const [selectedMedia, setSelectedMedia] = useState([]);
     const [checkboxes, setCheckboxes] = useState([]);
     const gamesCollectionRef = collection(db, "games");
     const currentDateTime = useCurrentDateTime();
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const newErrors = {};
 
         try {
             //Validation
+
             Object.entries(validationRules).forEach(([field, rules]) => {
                 rules.forEach((rule) => {
                     if (rule.condition(eval(field))) {
@@ -81,8 +84,13 @@ const CreateGame = () => {
             const uploadImg = await uploadBytes(storageRef, imageUpload);
             const downloadURL = await getDownloadURL(uploadImg.ref);
 
-            const mediaUrls = []
+            //Cover image handler
+            const coverStorageRef = ref(storage, `covers/${generateNewFileName(title, currentDateTime)}/${generateNewFileName(coverImage.name, currentDateTime)}`);
+            const uploadCover = await uploadBytes(coverStorageRef, coverImage);
+            const downloadCoverURL = await getDownloadURL(uploadCover.ref);
+
             //Media handler
+            const mediaUrls = []
             if (selectedMedia.length > 0) {
                 const uploadPromises = selectedMedia.map(async (media) => {
                     const mediaStorageRef = ref(storage, `media/${generateNewFileName(title, currentDateTime)}/${generateNewFileName(media.name, currentDateTime)}`);
@@ -108,7 +116,8 @@ const CreateGame = () => {
                 isEarlyAccess: isEarlyAccess,
                 multiplayer: multiplayer,
                 imgUrl: downloadURL,
-                media: mediaUrls
+                media: mediaUrls,
+                coverUrl: downloadCoverURL
             });
 
             //Reset form
@@ -156,6 +165,11 @@ const CreateGame = () => {
         if (!file) return;
         const selectedFiles = Array.from(file);
         setSelectedMedia(selectedFiles);
+    }
+
+    const uploadCover = (e) => {
+        setCoverImage(e.target.files[0]);
+        if (e.target.files[0]) setCoverImgPreview(URL.createObjectURL(e.target.files[0]));
     }
 
     return (
@@ -229,14 +243,24 @@ const CreateGame = () => {
                     <InputErrorNotification errors={errors} field="selectedMedia" />
                 </div>
                 <div>
-                    <div className="mb-4">
-                        <p className="pl-4 mb-1">Banner actual</p>
-                        {imgPreview ? <img src={imgPreview} alt="" className="w-full h-60 object-cover" /> : <div className="w-full h-60 bg-input flex flex-col items-center justify-center"><MdHideImage className="text-2xl" /> No hay imagen</div>}
-                        <InputErrorNotification errors={errors} field="imageUpload" />
+                    <div>
+                        <div className="mb-4">
+                            <p className="pl-4 mb-1">Banner actual</p>
+                            {imgPreview ? <img src={imgPreview} alt="" className="w-full h-60 object-cover" /> : <div className="w-full h-60 bg-input flex flex-col items-center justify-center"><MdHideImage className="text-2xl" /> No hay imagen</div>}
+                            <InputErrorNotification errors={errors} field="imageUpload" />
+                        </div>
+                        <Input type="file" change={(e) => uploadImg(e)} id="banner" >Cambiar Banner</Input>
                     </div>
-                    <Input type="file" change={(e) => uploadImg(e)} id="banner" >Cambiar Banner</Input>
+                    <div>
+                        <div className="mb-4">
+                            <p className="pl-4 mb-1">Cover actual</p>
+                            {coverImgPreview ? <img src={coverImgPreview} alt="" className="aspect-[2/3] object-cover" /> : <div className="aspect-[2/3] bg-input flex flex-col items-center justify-center"><MdHideImage className="text-2xl" /> No hay imagen</div>}
+                            <InputErrorNotification errors={errors} field="coverImage" />
+                        </div>
+                        <Input type="file" change={(e) => uploadCover(e)} id="cover" >Cambiar Cover</Input>
+                    </div>
                 </div>
-                <Button type="submit">Añadir</Button>
+                <Button type="submit">Crear juego</Button>
             </form>
         </ResponsiveLayout>
     );

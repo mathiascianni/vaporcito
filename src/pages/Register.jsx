@@ -1,9 +1,10 @@
 //Firebase Register
-import { auth, googleProvider } from "../config/config.firebase";
+import { auth, googleProvider, db } from "../config/config.firebase";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 //Components
-import { Input, Title } from "../components/_index";
+import { Input, Title, InputErrorNotification } from "../components/_index";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +17,17 @@ import { FcGoogle } from "react-icons/fc";
 import { IoAlertCircle } from "react-icons/io5";
 import { BsArrowLeftShort } from "react-icons/bs";
 
+//Utils
+import registerValidationRules from "../constants/registerValidationRules";
+import ErrorHandler from "../utils/ErrorHandler";
+
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState([]);
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [userName, setUserName] = useState("");
+    const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
 
@@ -28,33 +35,62 @@ const Register = () => {
     const signIn = async (e) => {
         e.preventDefault();
 
+        const newErrors = {};
+
+        Object.entries(registerValidationRules).forEach(([field, rules]) => {
+            rules.forEach((rule) => {
+                if (rule.condition(eval(field))) {
+                    if (!newErrors[field]) {
+                        newErrors[field] = [];
+                    }
+                    newErrors[field].push(rule.message);
+                }
+            });
+        });
+
+        if (password !== confirmPassword || confirmPassword === "") {
+            newErrors.confirmPassword = ["Las contraseñas no coinciden"];
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            throw new ErrorHandler("Se han producido errores");
+        }
+
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => { return userCredential.user });
+            const docRef = doc(db, "users", userCredential.uid);
+
+            //Todo: añadir el resto de campos que no son obligatorios, pero que deben estar mínimamente vacíos
+            await setDoc(docRef, {
+                email: userCredential.email,
+                userName: userName,
+                rol: "user",
+            });
+            setErrors({});
+            navigate("/");
         } catch (error) {
-            console.log(error.code);
-            setErrors(error.code);
+            console.error(error.message);
         }
     }
 
     //Crear con Google
     const signInWithGoogle = async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
+            const userCredential = await signInWithPopup(auth, googleProvider).then((userCredential) => { return userCredential.user });
+            const docRef = doc(db, "users", userCredential.uid);
+
+            //Todo: añadir el resto de campos que no son obligatorios, pero que deben estar mínimamente vacíos
+            await setDoc(docRef, {
+                email: userCredential.email,
+                userName: "",
+                rol: "user",
+            });
             navigate("/");
         } catch (error) {
             console.error(error);
         }
     }
-
-    //Cerrar sesión
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value);
-    }
-
-    const handleChangePassword = (e) => {
-        setPassword(e.target.value);
-    }
-
 
     return (
         <section className="w-full h-screen lg:py-8 bg-[url('/img/dragon_bg.jpg')] bg-no-repeat bg-cover bg-center md:bg-contain md:bg-right ">
@@ -65,10 +101,22 @@ const Register = () => {
                     <p className="my-4">¿Ya tenés una cuenta? <Link to="/login" className="text-accent hover:text-white transition">Iniciá sesión</Link></p>
                     <form onSubmit={signIn}>
                         <div className="flex flex-col gap-4">
-                            <Input type="text" name="username" placeholder="Matna" >Nombre de usuario</Input>
-                            <Input type="email" name="email" placeholder="example@mail.com" change={(e) => handleChangeEmail(e)}>Email</Input>
-                            <Input type="password" name="password" placeholder="Ingresá tu contraseña" change={(e) => handleChangePassword(e)}>Contraseña</Input>
-                            <Input type="password" name="repassword" placeholder="Reingresá tu contraseña">Confirmar contraseña</Input>
+                            <div>
+                                <Input type="text" name="username" placeholder="Matna" value={userName} change={(e) => setUserName(e.target.value)} >Nombre de usuario</Input>
+                                <InputErrorNotification errors={errors} field="userName" />
+                            </div>
+                            <div>
+                                <Input type="email" name="email" placeholder="example@mail.com" change={(e) => setEmail(e.target.value)} value={email}>Email</Input>
+                                <InputErrorNotification errors={errors} field="email" />
+                            </div>
+                            <div>
+                                <Input type="password" name="password" placeholder="Ingresá tu contraseña" change={(e) => setPassword(e.target.value)} value={password}>Contraseña</Input>
+                                <InputErrorNotification errors={errors} field="password" />
+                            </div>
+                            <div>
+                                <Input type="password" name="repassword" placeholder="Reingresá tu contraseña" change={(e) => setConfirmPassword(e.target.value)} value={confirmPassword}>Confirmar contraseña</Input>
+                                <InputErrorNotification errors={errors} field="confirmPassword" />
+                            </div>
                             {errors.length > 0 ? <span className="text-red-500 flex items-center gap-2"><IoAlertCircle size="1.5rem" /> {firebaseErrors[errors]}</span> : null}
                         </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded-full w-full mt-8 hover:bg-primary-dark transition">Crear cuenta</button>

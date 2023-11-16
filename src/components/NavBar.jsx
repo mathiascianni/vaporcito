@@ -1,10 +1,11 @@
 //React
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 //Firebase
-import { auth } from "../config/config.firebase";
+import { auth, db } from "../config/config.firebase";
 import { signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 //Icons
 import { BiMenu, BiLogOut } from 'react-icons/bi';
@@ -12,11 +13,14 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { PiHandbagSimpleFill } from 'react-icons/pi';
 import useIsMobile from "../hooks/useIsMobile";
 
+//Context
+import { useUser } from "../context/User/UserContext";
+
 const NavBar = () => {
-    const user = auth.currentUser;
     const [menu, setMenu] = useState(false);
     const navigate = useNavigate();
     const isMobile = useIsMobile();
+    const { userRole, user, loading } = useUser();
 
     const logout = async () => {
         try {
@@ -45,7 +49,7 @@ const NavBar = () => {
                     <li className="w-8"><button className="bg-input h-full aspect-square  flex items-center justify-center rounded-md group hover:bg-white transition" onClick={() => { setMenu(true); }} ><span className="group-hover:text-input transition"><BiMenu size="1.5rem" /></span></button></li>
                 </ul>
             </div>
-            <div className={`fixed bg-darker top-0 right-0 h-screen gap-8 w-[280px] transition duration-500 ${menu ? "translate-x-0" : "translate-x-[120%]"}`}>
+            <div className={`fixed z-50 bg-darker top-0 right-0 h-screen gap-8 w-[280px] transition duration-500 ${menu ? "translate-x-0" : "translate-x-[120%]"}`}>
                 <div className="h-full w-full relative p-8 text-end">
                     <button onClick={() => { setMenu(false); }} className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[-50%] rounded-full bg-darker p-4">
                         <AiOutlineClose size="2rem" />
@@ -57,9 +61,11 @@ const NavBar = () => {
                                 <li className="hover:text-primary transition"><NavLink to="/" className="block" onClick={() => { setMenu(false); }}>Inicio</NavLink></li>
                                 <li className="hover:text-primary transition"><NavLink to="/catalog" className="block" onClick={() => { setMenu(false); }}>Catálogo de juegos</NavLink></li>
                                 <li className="hover:text-primary transition"><NavLink to="/support" className="block" onClick={() => { setMenu(false); }}>Soporte</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/admin" className="block" onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
                                 {
-                                    isMobile && !user &&
+                                    !loading && userRole === "admin" && <li className="hover:text-primary transition"><NavLink to="/admin" className="block" onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
+                                }
+                                {
+                                    !loading && isMobile && !user &&
                                     <>
                                         <li><div className="w-full h-[1px] bg-input"></div></li>
                                         <li className="flex items-center justify-end hover:underline hover:underline-offset-8"><Link to="/login" >Iniciar Sesión</Link></li>

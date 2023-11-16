@@ -5,7 +5,7 @@ const CardsContainer = () => {
     const { games, loading } = useGames();
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 container mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 container mx-auto">
             {
                 <LoaderOrContent loading={loading} Component={Card} iterable={games} />
             }
