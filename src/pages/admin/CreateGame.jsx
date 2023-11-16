@@ -39,7 +39,7 @@ const CreateGame = () => {
     const [developer, setDeveloper] = useState("");
     const [multiplayer, setMultiplayer] = useState([]);
     const [isEarlyAccess, setIsEarlyAccess] = useState(false);
-    //Lanzamiento, Es early access, Etiquetas, Specs
+    //Lanzamiento, Etiquetas, Specs
 
     //Error handler
     const [errors, setErrors] = useState({});
@@ -53,13 +53,14 @@ const CreateGame = () => {
     const gamesCollectionRef = collection(db, "games");
     const currentDateTime = useCurrentDateTime();
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const newErrors = {};
 
         try {
             //Validation
+
             Object.entries(validationRules).forEach(([field, rules]) => {
                 rules.forEach((rule) => {
                     if (rule.condition(eval(field))) {

@@ -11,7 +11,7 @@ const Card = ({ data: game }) => {
                 </div>
             </div>
         </Link>
-    );
+    );  
 }
 
 export default Card;

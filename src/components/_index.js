@@ -20,6 +20,7 @@ import SkeletonMediaLoader from "./SkeletonMediaLoader";
 
 // Admin components
 import AdminCard from "./admin/AdminCard";
+import AdminCheck from "./admin/AdminCheck";
 
 export {
     Title,
@@ -40,5 +41,6 @@ export {
     ResponsiveLayout,
     MediaPreview,
     MediaCarousel,
-    SkeletonMediaLoader
+    SkeletonMediaLoader,
+    AdminCheck
 }
