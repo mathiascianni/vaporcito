@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { BsImageFill } from 'react-icons/bs';
 
-const SkeletonMediaLoader = ({ media, type, hovereable = false, controls=false }) => {
+const SkeletonMediaLoader = ({ media, type, hovereable = false, controls=false, selected = false }) => {
     const [loading, setLoading] = useState(true);
-    const mediaStyles = `w-full h-full object-cover ${loading ? "hidden" : "block"} ${hovereable ? "cursor-pointer brightness-50 hover:brightness-100 transition" : ""}`
+    const mediaStyles = `w-full h-full object-cover ${loading ? "hidden" : "block"} ${hovereable ? "cursor-pointer brightness-50 hover:brightness-100 transition" : ""} ${selected ? "brightness-100" : ""}`
 
     return (
         <>

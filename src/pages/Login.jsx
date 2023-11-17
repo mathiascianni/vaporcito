@@ -43,7 +43,6 @@ const Login = () => {
         e.preventDefault();
         await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                console.log("user logged", userCredential)
                 navigate("/");
             })
             .catch((error) => {

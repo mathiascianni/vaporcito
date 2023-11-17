@@ -31,12 +31,14 @@ const UserProvider = ({ children }) => {
         }
         getUserRole();
 
-    }, [user])
+    }, [user]);
 
     const value = {
         user,
         userRole,
-        loading
+        loading,
+        setUser,
+        setUserRole
     };
 
     return (

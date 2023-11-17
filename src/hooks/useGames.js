@@ -1,6 +1,6 @@
 import { db } from "../config/config.firebase";
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, limit } from "firebase/firestore";
 
 const useGames = () => {
     const [games, setGames] = useState([]);

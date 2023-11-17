@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 //Firebase
-import { auth, db } from "../config/config.firebase";
+import { auth } from "../config/config.firebase";
 import { signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 
 //Icons
 import { BiMenu, BiLogOut } from 'react-icons/bi';
@@ -14,19 +13,20 @@ import { PiHandbagSimpleFill } from 'react-icons/pi';
 import useIsMobile from "../hooks/useIsMobile";
 
 //Context
-import { useUser } from "../context/User/UserContext";
+import { useUser } from "../context/users/UserContext";
 
 const NavBar = () => {
     const [menu, setMenu] = useState(false);
     const navigate = useNavigate();
     const isMobile = useIsMobile();
-    const { userRole, user, loading } = useUser();
-
+    const { userRole, user, loading, setUser, setUserRole } = useUser();
+    const linkStyles = "hover:text-primary transition hover:bg-input rounded-full p-1 px-4 block";
     const logout = async () => {
         try {
             await signOut(auth);
             setMenu(false);
-
+            setUser(null);
+            setUserRole(null);
             navigate("/");
         } catch (error) {
             console.error(error);
@@ -58,11 +58,11 @@ const NavBar = () => {
 
                         <li>
                             <ul className="flex flex-col gap-4">
-                                <li className="hover:text-primary transition"><NavLink to="/" className="block" onClick={() => { setMenu(false); }}>Inicio</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/catalog" className="block" onClick={() => { setMenu(false); }}>Catálogo de juegos</NavLink></li>
-                                <li className="hover:text-primary transition"><NavLink to="/support" className="block" onClick={() => { setMenu(false); }}>Soporte</NavLink></li>
+                                <li ><NavLink to="/" className={linkStyles} onClick={() => { setMenu(false); }}>Inicio</NavLink></li>
+                                <li ><NavLink to="/catalog" className={linkStyles} onClick={() => { setMenu(false); }}>Catálogo de juegos</NavLink></li>
+                                <li><NavLink to="/support" className={linkStyles} onClick={() => { setMenu(false); }}>Soporte</NavLink></li>
                                 {
-                                    !loading && userRole === "admin" && <li className="hover:text-primary transition"><NavLink to="/admin" className="block" onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
+                                    !loading && userRole === "admin" && <li><NavLink to="/admin" className={linkStyles} onClick={() => { setMenu(false); }}>Administrador</NavLink></li>
                                 }
                                 {
                                     !loading && isMobile && !user &&
@@ -81,7 +81,7 @@ const NavBar = () => {
                                     <li><div className="w-full h-[1px] bg-input"></div></li>
                                     <li>
                                         <p className="font-bold mb-4">{user.email}</p>
-                                        <button onClick={logout} className="transition flex items-center justify-end gap-2 w-full hover:text-error "><BiLogOut size="1.5rem" /> Cerrar Sesión</button>
+                                        <button onClick={logout} className="transition inline-flex items-center justify-end gap-2 hover:text-error "><BiLogOut size="1.5rem" /> Cerrar Sesión</button>
                                     </li>
                                 </ul>
                             </li>

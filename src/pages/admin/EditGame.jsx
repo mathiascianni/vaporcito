@@ -51,7 +51,6 @@ const EditGame = () => {
 
     const handleUpdateGame = async (e) => {
         e.preventDefault();
-        console.log(newGame)
 
         try {
 

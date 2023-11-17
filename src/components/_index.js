@@ -19,8 +19,9 @@ import MediaCarousel from "./MediaCarousel";
 import SkeletonMediaLoader from "./SkeletonMediaLoader";
 
 // Admin components
-import AdminCard from "./admin/AdminCard";
 import AdminCheck from "./admin/AdminCheck";
+import AdminCardTag from "./admin/AdminCardTag";
+import GameAdminPanel from "./admin/GameAdminPanel";
 
 export {
     Title,
@@ -31,7 +32,6 @@ export {
     NavBar,
     Footer,
     LoaderOrContent,
-    AdminCard,
     Loader,
     ModalNotification,
     TextArea,
@@ -42,5 +42,7 @@ export {
     MediaPreview,
     MediaCarousel,
     SkeletonMediaLoader,
-    AdminCheck
+    AdminCheck,
+    AdminCardTag,
+    GameAdminPanel
 }

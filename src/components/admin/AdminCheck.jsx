@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { useUser } from "../../context/User/UserContext";
+
+import { useUser } from "../../context/users/UserContext";
 
 const AdminCheck = ({ children }) => {
     const { userRole, loading } = useUser();

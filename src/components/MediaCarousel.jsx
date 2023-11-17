@@ -56,7 +56,6 @@ const MediaCarousel = ({ media }) => {
 
     useEffect(() => {
         if (mediaArr.length > 0) handleMediaPreview(mediaArr[0].url, mediaArr[0].type);
-        console.log(mediaArr)
     }, [mediaArr])
 
     return (
@@ -71,7 +70,7 @@ const MediaCarousel = ({ media }) => {
                 {mediaArr.slice(startIdx, endIdx).map((file, i) => (
                     <div className={`aspect-[3/2] ${file.index === mediaIndex ? "border border-2 border-primary" : ""}`} key={i} >
                         <div className="h-full cursor-pointer group overflow-hidden " onClick={() => handleMediaPreview(file.url, file.type, file.index)}>
-                            <SkeletonMediaLoader media={file.url} type={file.type} hovereable />
+                            <SkeletonMediaLoader media={file.url} type={file.type} hovereable selected={file.index === mediaIndex} />
                         </div>
                     </div>
                 ))}
