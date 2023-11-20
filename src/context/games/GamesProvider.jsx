@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { db } from "../../config/config.firebase";
+import { db, storage } from "../../config/config.firebase";
 import { GamesContext } from "./GamesContext";
-import { getDocs, orderBy, collection, query, limit } from "firebase/firestore";
+import { getDocs, orderBy, collection, query, limit, deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 
 const GamesProvider = ({ children }) => {
     const gamesCollectionRef = collection(db, "games");
@@ -34,11 +35,33 @@ const GamesProvider = ({ children }) => {
         setLoading(false);
     }
 
+    const deleteGame = async (game) => {
+        const gameDoc = doc(db, "games", game.id);
+        await deleteDoc(gameDoc);
+
+        try {
+            //Delete banner
+            await deleteObject(ref(storage, `${game.imgUrl}`));
+            
+            //Delete cover
+            await deleteObject(ref(storage, `${game.coverUrl}`));
+
+            //Delete screenshots
+            for (const screenshot of game.media) {
+                await deleteObject(ref(storage, `${screenshot}`));
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const value = {
         games,
         loading,
         getAllGames,
-        getLimitedGames
+        getLimitedGames,
+        deleteGame
     };
 
     return (

@@ -3,9 +3,12 @@ import { BsImageFill } from 'react-icons/bs';
 import { FiAlertCircle } from "react-icons/fi";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useGames } from "../../context/games/GamesContext";
 const GameAdminPanel = ({ games, loading }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+
+    const { deleteGame } = useGames();
 
     return (
         <>
@@ -28,7 +31,7 @@ const GameAdminPanel = ({ games, loading }) => {
                                 </div>
                             </div>
                         </div>
-                        {showModal && <ModalNotification title="¿Deseas eliminar este juego?" subtitle="El juego se eliminará para siempre (¡Eso es mucho tiempo!)." icon={<FiAlertCircle className="text-4xl text-error" />} tBtnText="No, cancelar" tBtnAction={() => setShowModal(false)} fBtnText="Sí, eliminar" fBtnAction close={() => setShowModal(false)} iColor  />}
+                        {showModal && <ModalNotification title="¿Deseas eliminar este juego?" subtitle="El juego se eliminará para siempre (¡Eso es mucho tiempo!)." icon={<FiAlertCircle className="text-4xl text-error" />} tBtnText="No, cancelar" tBtnAction={() => setShowModal(false)} fBtnText="Sí, eliminar" fBtnAction={() => deleteGame(game)} close={() => setShowModal(false)} iColor />}
                     </div>
                 ))
             }
