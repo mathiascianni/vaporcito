@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { db, storage } from "../../config/config.firebase";
 import { GamesContext } from "./GamesContext";
-import { getDocs, orderBy, collection, query, limit, deleteDoc, doc } from "firebase/firestore";
+import { getDocs, orderBy, collection, query, limit, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+
 
 const GamesProvider = ({ children }) => {
     const gamesCollectionRef = collection(db, "games");
     const [games, setGames] = useState([]);
+    const [game, setGame] = useState({});
     const [loading, setLoading] = useState(true);
 
     /**
@@ -35,14 +37,26 @@ const GamesProvider = ({ children }) => {
         setLoading(false);
     }
 
-    const deleteGame = async (game) => {
-        const gameDoc = doc(db, "games", game.id);
-        await deleteDoc(gameDoc);
-
+    const getGameById = async (id) => {
         try {
+            const docSnap = await getDoc(doc(db, "games", id));
+            setGame(docSnap.data());
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    const deleteGame = async (game) => {
+        try {
+            const gameDoc = doc(db, "games", game.id);
+
+            await deleteDoc(gameDoc);
+
             //Delete banner
             await deleteObject(ref(storage, `${game.imgUrl}`));
-            
+
             //Delete cover
             await deleteObject(ref(storage, `${game.coverUrl}`));
 
@@ -50,7 +64,6 @@ const GamesProvider = ({ children }) => {
             for (const screenshot of game.media) {
                 await deleteObject(ref(storage, `${screenshot}`));
             }
-
         } catch (error) {
             console.error(error);
         }
@@ -59,9 +72,11 @@ const GamesProvider = ({ children }) => {
     const value = {
         games,
         loading,
+        game,
         getAllGames,
         getLimitedGames,
-        deleteGame
+        deleteGame,
+        getGameById
     };
 
     return (

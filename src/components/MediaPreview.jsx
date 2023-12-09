@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
+import { CheckMediaType } from "./_index";
 
 const MediaPreview = ({ media }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -29,16 +30,7 @@ const MediaPreview = ({ media }) => {
             <div className="grid grid-cols-3 gap-4 overflow-x-hidden relative">
                 {media.slice(startIdx, endIdx).map((file, i) => (
                     <div className="aspect-[3/2]" key={i}>
-                        {file.type.startsWith('image/') ? (
-                            <img src={URL.createObjectURL(file)} alt={file.name} className="object-cover object-center w-full h-full" />
-                        ) : file.type.startsWith('video/') ? (
-                            <video controls className="object-cover object-center w-full h-full">
-                                <source src={URL.createObjectURL(file)} type={file.type} />
-                                Tu navegador no admite la reproducción de video.
-                            </video>
-                        ) : (
-                            <p>Vista previa no disponible</p>
-                        )}
+                        <CheckMediaType file={file} />
                     </div>
                 ))}
             </div>

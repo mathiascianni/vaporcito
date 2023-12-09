@@ -29,6 +29,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 const CreateGame = () => {
 
     //Input handlers
+    //TODO: Refactorizar en un sólo objeto -Como en EditGame- y reutilizarlo
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
     const [price, setPrice] = useState("");
@@ -146,11 +147,11 @@ const CreateGame = () => {
             newArray.splice(index, 1);
         }
 
-        const nameIndex = checkboxes.indexOf(name);
+        const nameIndex = checkboxes.indexOf(code);
         if (nameIndex === -1) {
-            setCheckboxes([...checkboxes, name]);
+            setCheckboxes([...checkboxes, code]);
         } else {
-            setCheckboxes(checkboxes.filter((checkbox) => checkbox !== name));
+            setCheckboxes(checkboxes.filter((checkbox) => checkbox !== code));
         }
         setArray(newArray);
     }
@@ -207,6 +208,7 @@ const CreateGame = () => {
                     <div className="md:grid grid-cols-3 gap-4 mb-4">
                         <div>
                             <p className="pl-4 mb-1">Clasificación ESRB</p>
+                            {/* Todo: pasar a componente */}
                             <select name="esrb" id="esrb" className="bg-input cursor-pointer px-4 py-2 rounded-full w-full mb-2 focus:outline-none focus:ring-2 focus:ring-primary" value={esrb} onChange={(e) => setEsrb(e.target.value)}>
                                 {esrbRating.map((esrb) => (
                                     <option key={esrb.id} value={esrb.code}>{esrb.name}</option>

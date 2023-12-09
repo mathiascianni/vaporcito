@@ -17,11 +17,13 @@ import ResponsiveLayout from "./ResponsiveLayout";
 import MediaPreview from "./MediaPreview";
 import MediaCarousel from "./MediaCarousel";
 import SkeletonMediaLoader from "./SkeletonMediaLoader";
+import CheckMediaType from "./CheckMediaType";
 
 // Admin components
 import AdminCheck from "./admin/AdminCheck";
 import AdminCardTag from "./admin/AdminCardTag";
 import GameAdminPanel from "./admin/GameAdminPanel";
+import EditMediaFiles from "./admin/EditMediaFiles";
 
 export {
     Title,
@@ -44,5 +46,7 @@ export {
     SkeletonMediaLoader,
     AdminCheck,
     AdminCardTag,
-    GameAdminPanel
+    GameAdminPanel,
+    EditMediaFiles,
+    CheckMediaType
 }
